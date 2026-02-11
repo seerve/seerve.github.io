@@ -43,8 +43,7 @@ if (Hls.isSupported()) {
     hls.attachMedia(video);
 
     hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        video.play();
-        console.log("STREAM OK");
+        console.log("STREAM READY");
     });
 
     hls.on(Hls.Events.ERROR, function (event, data) {
@@ -52,11 +51,8 @@ if (Hls.isSupported()) {
     });
 
 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    // Safari native HLS support
+    // Safari native support
     video.src = videoSrc;
-    video.addEventListener('loadedmetadata', function() {
-        video.play();
-    });
 } else {
     alert("Browser tidak mendukung HLS.");
 }
