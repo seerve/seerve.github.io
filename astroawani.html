@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HLS Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+html,body{
+    margin:0;
+    padding:0;
+    background:#000;
+    height:100%;
+}
+video{
+    width:100vw;
+    height:100vh;
+    object-fit:contain;
+}
+</style>
+</head>
+<body>
+
+<video id="video" controls playsinline></video>
+
+<script>
+const video = document.getElementById('video');
+const videoSrc = "https://d2idp3hzkhjpih.cloudfront.net/out/v1/4b85d9c2bf97413eb0c9fd875599b837/index.m3u8";
+
+if (Hls.isSupported()) {
+
+    const hls = new Hls({
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        enableWorker: true
+    });
+
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+        console.log("STREAM OK");
+    });
+
+    hls.on(Hls.Events.ERROR, function (event, data) {
+        console.error("HLS ERROR:", data);
+    });
+
+} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari native HLS support
+    video.src = videoSrc;
+    video.addEventListener('loadedmetadata', function() {
+        video.play();
+    });
+} else {
+    alert("Browser tidak mendukung HLS.");
+}
+</script>
+
+</body>
+</html>
