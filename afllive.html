@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HLS Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+html,body{
+    margin:0;
+    padding:0;
+    background:#000;
+    height:100%;
+}
+video{
+    width:100vw;
+    height:100vh;
+    object-fit:contain;
+}
+</style>
+</head>
+<body>
+
+<video id="video" controls playsinline></video>
+
+<script>
+const video = document.getElementById('video');
+const videoSrc = "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/bitrate_3.m3u8";
+
+if (Hls.isSupported()) {
+
+    const hls = new Hls({
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        enableWorker: true
+    });
+
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        console.log("STREAM READY");
+    });
+
+    hls.on(Hls.Events.ERROR, function (event, data) {
+        console.error("HLS ERROR:", data);
+    });
+
+} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari native support
+    video.src = videoSrc;
+} else {
+    alert("Browser tidak mendukung HLS.");
+}
+</script>
+
+</body>
+</html>
